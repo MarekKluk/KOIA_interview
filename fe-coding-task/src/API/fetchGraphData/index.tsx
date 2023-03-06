@@ -1,4 +1,4 @@
-export function fetchGraphData (quartersArray: string[], houseType: string) {
+export function fetchGraphData (quartersArray: string[], houseTypeApiValue: string | undefined) {
   return(
     fetch('https://data.ssb.no/api/v0/no/table/07241',
       {
@@ -14,7 +14,7 @@ export function fetchGraphData (quartersArray: string[], houseType: string) {
               "selection": {
                 "filter": "item",
                 "values": [
-                  houseType
+                  houseTypeApiValue
                 ]
               }
             },
@@ -40,6 +40,5 @@ export function fetchGraphData (quartersArray: string[], houseType: string) {
           }
         })
       })
-      .then((res) => res.json())
   )
 }
