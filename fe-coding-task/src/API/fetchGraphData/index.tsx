@@ -1,5 +1,8 @@
-export function fetchGraphData (quartersArray: string[], houseTypeApiValue: string | undefined) {
-  return(
+interface GraphRawData {
+ value: number[]
+}
+export async function fetchGraphData (quartersArray: string[], houseTypeApiValue: string | undefined): Promise<GraphRawData> {
+  const fetchResult = await
     fetch('https://data.ssb.no/api/v0/no/table/07241',
       {
         method: 'POST',
@@ -8,37 +11,37 @@ export function fetchGraphData (quartersArray: string[], houseTypeApiValue: stri
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          "query": [
+          'query': [
             {
-              "code": "Boligtype",
-              "selection": {
-                "filter": "item",
-                "values": [
+              'code': 'Boligtype',
+              'selection': {
+                'filter': 'item',
+                'values': [
                   houseTypeApiValue
                 ]
               }
             },
             {
-              "code": "ContentsCode",
-              "selection": {
-                "filter": "item",
-                "values": [
-                  "KvPris"
+              'code': 'ContentsCode',
+              'selection': {
+                'filter': 'item',
+                'values': [
+                  'KvPris'
                 ]
               }
             },
             {
-              "code": "Tid",
-              "selection": {
-                "filter": "item",
-                "values": quartersArray
+              'code': 'Tid',
+              'selection': {
+                'filter': 'item',
+                'values': quartersArray
               }
             }
           ],
-          "response": {
-            "format": "json-stat2"
+          'response': {
+            'format': 'json-stat2'
           }
         })
       })
-  )
+  return fetchResult.json();
 }
