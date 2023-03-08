@@ -1,47 +1,52 @@
 import './index.css'
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
-import React, {useEffect, useState} from 'react';
-import { GraphData } from '../types/GraphData';
-import {Button, TextField} from "@mui/material";
+import React, { useEffect, useState } from 'react';
+import { Button, TextField } from '@mui/material';
+import { useGraphData } from './useGraphData';
+import {useSearchParams} from 'react-router-dom';
 
-interface Props {
-  graphData: GraphData,
-
-  searchParams: URLSearchParams
-}
-export function Graph ({ graphData, searchParams }: Props) {
+export function Graph () {
   const [inputValue, setInputValue] = useState<string>('')
   const [comment, setComment] = useState<string>('')
+  const { graphData } = useGraphData()
+  const [searchParams, ] = useSearchParams();
+  const startQuarter = searchParams.get('startQuarter');
+  const endQuarter = searchParams.get('endQuarter');
+  const houseType = searchParams.get('houseType');
+  const commentKey = `${startQuarter}-${endQuarter}-${houseType}`;
 
   useEffect(() => {
-    const startQuarter = searchParams.get('startQuarter');
-    const endQuarter = searchParams.get('endQuarter');
-    const houseType = searchParams.get('houseType');
-
-    // save comment to localStorage based on URL params
-    const commentKey = `${startQuarter}-${endQuarter}-${houseType}`;
     const storedComment = localStorage.getItem(commentKey);
     if (storedComment) {
       setComment(storedComment);
     } else {
       setComment('');
     }
-  }, [searchParams]);
+  }, [searchParams, commentKey]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
   };
   const handleAddComment = () => {
-    const startQuarter = searchParams.get('startQuarter');
-    const endQuarter = searchParams.get('endQuarter');
-    const houseType = searchParams.get('houseType');
-
-    const commentKey = `${startQuarter}-${endQuarter}-${houseType}`;
     setComment(inputValue)
     localStorage.setItem(commentKey, inputValue);
   };
 
-  return(
+  const handleSaveGraphData = () => {
+    const statisticsStorage = JSON.parse(localStorage.getItem('statistics') || '[]');
+    const statisticsToSave = {
+      startQuarter,
+      endQuarter,
+      chartPoints: graphData?.chartPoints,
+      houseType: graphData?.houseType,
+      comment
+    }
+    statisticsStorage.push(statisticsToSave)
+    localStorage.setItem('statistics', JSON.stringify(statisticsStorage))
+  }
+
+  return  (
+    graphData &&
     <div className="graph-container">
       <h2>Chart for {graphData.houseType} house type</h2>
       <LineChart width={900} height={300} data={graphData.chartPoints} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
@@ -54,6 +59,7 @@ export function Graph ({ graphData, searchParams }: Props) {
       <div className="graph-comments">
         <TextField id="outlined-basic" variant="outlined" value={inputValue} onChange={handleInputChange} />
         <Button variant="outlined" onClick={handleAddComment}>Add Comment</Button>
+				<Button variant="outlined" onClick={handleSaveGraphData}>Save Graph Data</Button>
       </div>
       <p>{comment}</p>
     </div>

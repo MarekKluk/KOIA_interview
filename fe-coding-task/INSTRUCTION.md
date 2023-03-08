@@ -12,7 +12,10 @@ visit.
 UI should somehow limit users from providing quarter values earlier than 2009K1.
 
 
-We would like you also to add the possibility to save statistics for further use with the possibility to add and edit single comment for the presented statistics. The comment may be stored in Local Storage, so it can be later used when viewing the statistics. 
+We would like you also to add the possibility to save statistics for further use with the possibility 
+to add and edit single comment for the presented statistics. 
+The comment may be stored in Local Storage, so it can be later used when viewing the statistics. 
+ 
 
 ### For example
 
