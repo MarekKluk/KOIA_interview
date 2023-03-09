@@ -2,14 +2,12 @@ import { useEffect, useState } from 'react';
 import { fetchGraphData } from '../../API/fetchGraphData';
 import { HouseType } from '../types/HouseType';
 import { GraphData } from '../types/GraphData';
-import { useFilters } from '../Filters/useFilters';
 import { StatisticsData } from '../types/StatisticsData';
+import { useSearchParams } from 'react-router-dom';
 
 export function useGraphData () {
   const [graphData, setGraphData] = useState<GraphData | null>(null)
-  const {
-    searchParams
-  } = useFilters()
+  const [searchParams,] = useSearchParams()
 
   useEffect(() => {
     const startQuarter = searchParams.get('startQuarter') ?? ''

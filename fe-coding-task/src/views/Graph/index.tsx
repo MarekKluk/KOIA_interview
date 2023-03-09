@@ -2,13 +2,20 @@ import './index.css'
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
 import React, { useEffect, useState } from 'react';
 import { Button, TextField } from '@mui/material';
-import { useGraphData } from './useGraphData';
-import {useSearchParams} from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
+import { GraphData } from '../types/GraphData';
+import { StatisticsData } from '../types/StatisticsData';
 
-export function Graph () {
+interface Props {
+  graphData: GraphData | null
+
+  refreshStatistics: () => void
+
+}
+
+export function Graph ({ graphData, refreshStatistics }: Props) {
   const [inputValue, setInputValue] = useState<string>('')
   const [comment, setComment] = useState<string>('')
-  const { graphData } = useGraphData()
   const [searchParams, ] = useSearchParams();
   const startQuarter = searchParams.get('startQuarter');
   const endQuarter = searchParams.get('endQuarter');
@@ -34,6 +41,14 @@ export function Graph () {
 
   const handleSaveGraphData = () => {
     const statisticsStorage = JSON.parse(localStorage.getItem('statistics') || '[]');
+    const savedGraphData = statisticsStorage?.find((storageElement: StatisticsData) =>
+      storageElement.startQuarter === startQuarter &&
+      storageElement.endQuarter === endQuarter &&
+      storageElement.houseType === houseType
+    );
+    if(savedGraphData) {
+      statisticsStorage.splice(statisticsStorage.indexOf(savedGraphData), 1)
+    }
     const statisticsToSave = {
       startQuarter,
       endQuarter,
@@ -41,8 +56,9 @@ export function Graph () {
       houseType: graphData?.houseType,
       comment
     }
-    statisticsStorage.push(statisticsToSave)
+    statisticsStorage.unshift(statisticsToSave)
     localStorage.setItem('statistics', JSON.stringify(statisticsStorage))
+    refreshStatistics()
   }
 
   return  (

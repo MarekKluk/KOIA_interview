@@ -9,9 +9,18 @@ type RangePickerProps = {
 export function RangePicker ({ getQuarterString }: RangePickerProps) {
   const { setValue, watch } = useFormContext<FormValues>();
   const quarters = watch('quarters');
-  const handleQuartersChange = (event: Event, newValue: number | number[]) =>  {
-    setValue('quarters', newValue as number[] )
+  const minSliderDistance = 1;
+  const handleQuartersChange = (event: Event, newValue: number | number[], activeThumb: number) =>  {
+    if (!Array.isArray(newValue)) {
+      return;
+    }
+    if (activeThumb === 0) {
+      setValue('quarters',[Math.min(newValue[0], quarters[1] - minSliderDistance), quarters[1]]);
+    } else {
+      setValue('quarters',[quarters[0], Math.max(newValue[1], quarters[0] + minSliderDistance)]);
+    }
   };
+
   return (
     <Slider
       onChange={handleQuartersChange}

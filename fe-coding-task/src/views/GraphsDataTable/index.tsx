@@ -1,17 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import './index.css'
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button } from '@mui/material';
 import { StatisticsData } from '../types/StatisticsData';
 import { useSearchParams } from 'react-router-dom';
 
-export function GraphsDataTable() {
-  const [savedStatistics, setSavedStatistics] = useState<StatisticsData[] | []>([])
+interface Props {
+  savedStatistics: StatisticsData[]
+}
+export function GraphsDataTable({ savedStatistics }: Props) {
   const [, setSearchParams] = useSearchParams();
-
-  useEffect(() => {
-    const statisticsStorage = JSON.parse(localStorage.getItem('statistics') || '[]');
-    setSavedStatistics(statisticsStorage)
-  }, []);
 
   const handleDisplayGraph = (savedStatistics: StatisticsData) => {
     const startQuarter = savedStatistics.startQuarter;

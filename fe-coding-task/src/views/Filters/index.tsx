@@ -1,22 +1,22 @@
 import React from 'react';
-import {Button, CircularProgress, Typography} from '@mui/material';
+import { Button, CircularProgress, Typography } from '@mui/material';
 import { HouseSelector } from './HouseSelector';
 import { RangePicker } from './RangePicker';
 import { useFilters } from './useFilters';
 import { useFormContext } from 'react-hook-form';
 import { FormValues } from '../types/FormValues';
-import { useGraphData } from '../Graph/useGraphData';
+import { GraphData } from '../types/GraphData';
 
-export function Filters () {
+interface Props {
+  graphData: GraphData | null
+}
+export function Filters ({ graphData } : Props) {
   const {
     getQuarterString,
     onSubmit,
     handleSubmit,
     isGraphDataLoading
   } = useFilters()
-  const {
-    graphData
-  } = useGraphData()
   const { watch } = useFormContext<FormValues>()
   const quarterValues = watch('quarters')
 
