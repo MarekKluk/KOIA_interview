@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
-import { fetchGraphData } from '../../API/fetchGraphData';
-import { HouseType } from '../types/HouseType';
-import { GraphData } from '../types/GraphData';
-import { StatisticsData } from '../types/StatisticsData';
+import { fetchGraphData } from '../../../API/fetchGraphData';
+import { HouseType } from '../../types/HouseType';
+import { GraphData } from '../../types/GraphData';
+import { StatisticsData } from '../../types/StatisticsData';
 import { useSearchParams } from 'react-router-dom';
+import { getQuarterWithPairedSquarePerMeterPrice } from "./dataConversionFunctions/getQuarterWithPairedSquarePerMeterPrice";
+import { getDesiredQuartersArray } from "./dataConversionFunctions/getDesiredQuartersArray";
 
 export function useGraphData () {
   const [graphData, setGraphData] = useState<GraphData | null>(null)
@@ -38,22 +40,6 @@ export function useGraphData () {
       getGraphData();
     }
   }, [searchParams])
-  const getDesiredQuartersArray = (startQuarter: string, endQuarter: string) => {
-    const quarters: string[] = [];
-    const startYear = parseInt(startQuarter.slice(0, 4));
-    const endYear = parseInt(endQuarter.slice(0, 4));
-    const startQuarterNumber = parseInt(startQuarter.slice(5));
-    const endQuarterNumber = parseInt(endQuarter.slice(5));
-
-    for (let year = startYear; year <= endYear; year++) {
-      const start = year === startYear ? startQuarterNumber : 1;
-      const end = year === endYear ? endQuarterNumber : 4;
-      for (let quarter = start; quarter <= end; quarter++) {
-        quarters.push(`${year}K${quarter}`);
-      }
-    }
-    return quarters;
-  }
   const getHouseTypeApiValue = (houseType: string): string | undefined => {
     switch (houseType) {
       case HouseType.All:
@@ -65,16 +51,6 @@ export function useGraphData () {
       default:
         return undefined;
     }
-  }
-  const getQuarterWithPairedSquarePerMeterPrice = (squarePerMeterPrices: number[], quartersArray: string[]) => {
-    const getQuarterWithPairedSquarePerMeterPriceArray = []
-    for (let i = 0; i < squarePerMeterPrices.length ; i++) {
-      getQuarterWithPairedSquarePerMeterPriceArray.push({
-        name: quartersArray[i],
-        price: squarePerMeterPrices[i]
-      });
-    }
-    return getQuarterWithPairedSquarePerMeterPriceArray;
   }
 
   return {

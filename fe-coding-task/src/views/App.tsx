@@ -5,7 +5,7 @@ import { FiltersFormProvider } from './FiltersFormProvider';
 import { Filters } from './Filters';
 import { GraphsDataTable } from './GraphsDataTable';
 import { useGraphStatistics } from './utils/shared/useGraphStatistics';
-import { useGraphData } from './Graph/useGraphData';
+import { useGraphData } from './Graph/useGraphData/useGraphData';
 
 export function App() {
   const { savedStatistics, refreshStatistics } = useGraphStatistics();
