@@ -26,7 +26,7 @@ module.exports = {
     ],
     'rules': {
         'react/no-set-state': 'off',
-        'max-lines-per-function': [1, 80],
+        'max-lines-per-function': [1, 90],
         'import/prefer-default-export': 'off',
         'no-plusplus': 'off',
         'react/prop-types': 'off',
