@@ -1,4 +1,4 @@
-import { getDesiredQuartersArray } from "../getDesiredQuartersArray";
+import { getDesiredQuartersArray } from '../getDesiredQuartersArray';
 
 describe('The getDesiredQuartersArray function', () => {
 	describe('when startQuarter and endQuarter are the same ', () => {

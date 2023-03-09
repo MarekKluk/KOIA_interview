@@ -4,8 +4,8 @@ import { HouseType } from '../../types/HouseType';
 import { GraphData } from '../../types/GraphData';
 import { StatisticsData } from '../../types/StatisticsData';
 import { useSearchParams } from 'react-router-dom';
-import { getQuarterWithPairedSquarePerMeterPrice } from "./dataConversionFunctions/getQuarterWithPairedSquarePerMeterPrice";
-import { getDesiredQuartersArray } from "./dataConversionFunctions/getDesiredQuartersArray";
+import { getQuarterWithPairedSquarePerMeterPrice } from './dataConversionFunctions/getQuarterWithPairedSquarePerMeterPrice';
+import { getDesiredQuartersArray } from './dataConversionFunctions/getDesiredQuartersArray';
 
 export function useGraphData () {
   const [graphData, setGraphData] = useState<GraphData | null>(null)
