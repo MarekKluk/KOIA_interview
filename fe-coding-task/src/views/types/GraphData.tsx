@@ -1,7 +1,7 @@
-export interface GraphData {
+export interface ChartData {
   chartPoints: {
-    name: string,
-      price: number
-  }[],
-    houseType: string
+    quarterRange: string;
+    price: number;
+  }[];
+  houseType: string;
 }

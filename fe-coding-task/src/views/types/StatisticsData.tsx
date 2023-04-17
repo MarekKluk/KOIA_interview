@@ -1,10 +1,10 @@
-export interface StatisticsData {
-  startQuarter: string,
-  endQuarter: string,
+export interface ParametersData {
+  startQuarter: string;
+  endQuarter: string;
   chartPoints: {
-    name: string,
-    price: number
-  }[],
-  houseType: string,
-  comment: string
+    quarterRange: string;
+    price: number;
+  }[];
+  houseType: string;
+  comment: string;
 }

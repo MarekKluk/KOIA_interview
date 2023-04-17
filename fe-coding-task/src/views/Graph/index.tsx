@@ -1,25 +1,31 @@
-import './index.css'
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
-import React, { useEffect, useState } from 'react';
-import { Button, TextField } from '@mui/material';
-import { useSearchParams } from 'react-router-dom';
-import { GraphData } from '../types/GraphData';
-import { StatisticsData } from '../types/StatisticsData';
+import "./index.css";
+import {
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Area,
+  AreaChart,
+} from "recharts";
+import React, { useEffect, useState } from "react";
+import { Button, TextField } from "@mui/material";
+import { useSearchParams } from "react-router-dom";
+import { ChartData } from "../types/ChartData";
+import { ParametersData } from "../types/ParametersData";
 
 interface Props {
-  graphData: GraphData | null
+  chartData: ChartData | null;
 
-  refreshStatistics: () => void
-
+  updateParameters: () => void;
 }
 
-export function Graph ({ graphData, refreshStatistics }: Props) {
-  const [inputValue, setInputValue] = useState<string>('')
-  const [comment, setComment] = useState<string>('')
-  const [searchParams, ] = useSearchParams();
-  const startQuarter = searchParams.get('startQuarter');
-  const endQuarter = searchParams.get('endQuarter');
-  const houseType = searchParams.get('houseType');
+export function Chart({ chartData, updateParameters }: Props) {
+  const [inputValue, setInputValue] = useState<string>("");
+  const [comment, setComment] = useState<string>("");
+  const [searchParams] = useSearchParams();
+  const startQuarter = searchParams.get("startQuarter");
+  const endQuarter = searchParams.get("endQuarter");
+  const houseType = searchParams.get("houseType");
   const commentKey = `${startQuarter}-${endQuarter}-${houseType}`;
 
   useEffect(() => {
@@ -27,7 +33,7 @@ export function Graph ({ graphData, refreshStatistics }: Props) {
     if (storedComment) {
       setComment(storedComment);
     } else {
-      setComment('');
+      setComment("");
     }
   }, [searchParams, commentKey]);
 
@@ -35,49 +41,89 @@ export function Graph ({ graphData, refreshStatistics }: Props) {
     setInputValue(event.target.value);
   };
   const handleAddComment = () => {
-    setComment(inputValue)
+    setComment(inputValue);
     localStorage.setItem(commentKey, inputValue);
+    setInputValue("");
   };
 
-  const handleSaveGraphData = () => {
-    const statisticsStorage = JSON.parse(localStorage.getItem('statistics') || '[]');
-    const savedGraphData = statisticsStorage?.find((storageElement: StatisticsData) =>
-      storageElement.startQuarter === startQuarter &&
-      storageElement.endQuarter === endQuarter &&
-      storageElement.houseType === houseType
+  const handleSaveChartData = () => {
+    const parametersStorage = JSON.parse(
+      localStorage.getItem("parameters") || "[]"
     );
-    if(savedGraphData) {
-      statisticsStorage.splice(statisticsStorage.indexOf(savedGraphData), 1)
+    const savedChartData = parametersStorage?.find(
+      (storageElement: ParametersData) =>
+        storageElement.startQuarter === startQuarter &&
+        storageElement.endQuarter === endQuarter &&
+        storageElement.houseType === houseType
+    );
+    if (savedChartData) {
+      parametersStorage.splice(parametersStorage.indexOf(savedChartData), 1);
     }
-    const statisticsToSave = {
+    const parametersToSave = {
       startQuarter,
       endQuarter,
-      chartPoints: graphData?.chartPoints,
-      houseType: graphData?.houseType,
-      comment
-    }
-    statisticsStorage.unshift(statisticsToSave)
-    localStorage.setItem('statistics', JSON.stringify(statisticsStorage))
-    refreshStatistics()
-  }
+      chartPoints: chartData?.chartPoints,
+      houseType: chartData?.houseType,
+      comment,
+    };
+    parametersStorage.unshift(parametersToSave);
+    localStorage.setItem("parameters", JSON.stringify(parametersStorage));
+    updateParameters();
+  };
 
-  return  (
-    graphData &&
-    <div className="graph-container">
-      <h2>Chart for {graphData.houseType} house type</h2>
-      <LineChart width={900} height={300} data={graphData.chartPoints} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-        <Line type="monotone" dataKey="price" stroke="#8884d8" />
-        <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-        <XAxis dataKey='name' />
-        <YAxis />
-        <Tooltip />
-      </LineChart>
-      <div className="graph-comments">
-        <TextField id="outlined-basic" variant="outlined" value={inputValue} onChange={handleInputChange} />
-        <Button variant="outlined" onClick={handleAddComment}>Add Comment</Button>
-				<Button variant="outlined" onClick={handleSaveGraphData}>Save Graph Data</Button>
+  return (
+    chartData && (
+      <div className='container'>
+        <Button
+          sx={{ color: "success.main" }}
+          variant='outlined'
+          onClick={handleSaveChartData}
+        >
+          Save Chart Data
+        </Button>
+        <h3>Chart for {chartData.houseType} house type</h3>
+        <AreaChart
+          width={730}
+          height={250}
+          data={chartData.chartPoints}
+          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+        >
+          <defs>
+            <linearGradient id='colorPv' x1='0' y1='0' x2='0' y2='1'>
+              <stop offset='5%' stopColor='#82ca9d' stopOpacity={0.8} />
+              <stop offset='95%' stopColor='#82ca9d' stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <XAxis dataKey='quarterRange' />
+          <YAxis />
+          <CartesianGrid strokeDasharray='3 3' />
+          <Tooltip />
+          <Area
+            type='monotone'
+            dataKey='price'
+            stroke='#82ca9d'
+            fillOpacity={1}
+            fill='url(#colorPv)'
+          />
+        </AreaChart>
+        <div className='comments'>
+          <TextField
+            id='outlined-basic'
+            variant='outlined'
+            value={inputValue}
+            onChange={handleInputChange}
+          />
+          <Button
+            sx={{ color: "success.main" }}
+            variant='outlined'
+            onClick={handleAddComment}
+          >
+            {/* Add Comment */}
+            {comment.length > 0 ? "Update Comment" : "Add Comment"}
+          </Button>
+        </div>
+        <p>{comment}</p>
       </div>
-      <p>{comment}</p>
-    </div>
-  )
+    )
+  );
 }

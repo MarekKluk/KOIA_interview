@@ -1,23 +1,17 @@
-import React from 'react';
-import './App.css';
-import { Graph } from './Graph';
-import { FiltersFormProvider } from './FiltersFormProvider';
-import { Filters } from './Filters';
-import { GraphsDataTable } from './GraphsDataTable';
-import { useGraphStatistics } from './utils/shared/useGraphStatistics';
-import { useGraphData } from './Graph/useGraphData/useGraphData';
-
-export function App() {
-  const { savedStatistics, refreshStatistics } = useGraphStatistics();
-  const { graphData } = useGraphData()
-
+export function Content() {
+  const { savedParameters, updateParameters } = useChartParameters();
+  const { chartData } = useChartData();
+  console.log(savedParameters);
   return (
-    <FiltersFormProvider>
-      <div className="app-container">
-        <Filters graphData={graphData} />
-        <Graph refreshStatistics={refreshStatistics} graphData={graphData} />
-        <GraphsDataTable savedStatistics={savedStatistics} />
+    <ContentProvider>
+      <div className='container'>
+        <h1>Norway Real-Estate Price per Square Meter</h1>
+        <Filters chartData={chartData} />
+        <Chart updateParameters={updateParameters} chartData={chartData} />
+        {savedParameters.length > 0 && (
+          <SavedDataTable savedParameters={savedParameters} />
+        )}
       </div>
-    </FiltersFormProvider>
+    </ContentProvider>
   );
 }
