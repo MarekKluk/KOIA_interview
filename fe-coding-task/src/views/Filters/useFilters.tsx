@@ -1,41 +1,44 @@
-import { SubmitHandler, useFormContext } from 'react-hook-form';
-import { FormValues } from '../types/FormValues';
-import { useSearchParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { StatisticsData } from '../types/StatisticsData';
+import { SubmitHandler, useFormContext } from "react-hook-form";
+import { FormValues } from "../types/FormValues";
+import { useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { ParametersData } from "../types/ParametersData";
 
-export function useFilters () {
+export function useFilters() {
   const { handleSubmit, setValue } = useFormContext<FormValues>();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [isGraphDataLoading, setIsGraphDataLoading] = useState<boolean>(false)
-  const savedQuarters = localStorage.getItem('quarters') ;
-  const savedHouseType = localStorage.getItem('house-type');
+  const [isChartDataLoading, setIsChartDataLoading] = useState<boolean>(false);
+  const savedQuarters = localStorage.getItem("quarters");
+  const savedHouseTypes = localStorage.getItem("house-type");
 
   useEffect(() => {
-    if (savedQuarters && savedHouseType ) {
-      setValue('quarters', JSON.parse(savedQuarters));
-      setValue('houseType', savedHouseType);
+    if (savedQuarters && savedHouseTypes) {
+      setValue("quarters", JSON.parse(savedQuarters));
+      setValue("houseType", savedHouseTypes);
     }
-  }, [setValue, savedQuarters, savedHouseType]);
+  }, [setValue, savedQuarters, savedHouseTypes]);
 
   const getQuarterString = (quarter: number) => {
     const year = Math.floor(quarter / 4) + 2009;
     const quarterNumber = (quarter % 4) + 1;
     return `${year}K${quarterNumber}`;
-  }
+  };
 
   const onSubmit: SubmitHandler<FormValues> = (data: FormValues) => {
     const startQuarter = getQuarterString(data.quarters[0]);
     const endQuarter = getQuarterString(data.quarters[1]);
-    const statisticsStorage: StatisticsData[] = JSON.parse(localStorage.getItem('statistics') || 'null');
-    const savedGraphData = statisticsStorage?.find(storageElement =>
-      storageElement.startQuarter === startQuarter &&
-      storageElement.endQuarter === endQuarter &&
-      storageElement.houseType === data.houseType
+    const parametersStorage: ParametersData[] = JSON.parse(
+      localStorage.getItem("parameters") || "null"
     );
-    if(savedGraphData) {
-      statisticsStorage.splice(statisticsStorage.indexOf(savedGraphData), 1)
-      localStorage.setItem('statistics', JSON.stringify(statisticsStorage));
+    const savedChartData = parametersStorage?.find(
+      (storageElement) =>
+        storageElement.startQuarter === startQuarter &&
+        storageElement.endQuarter === endQuarter &&
+        storageElement.houseType === data.houseType
+    );
+    if (savedChartData) {
+      parametersStorage.splice(parametersStorage.indexOf(savedChartData), 1);
+      localStorage.setItem("parameters", JSON.stringify(parametersStorage));
     }
     const queryParams = new URLSearchParams({
       startQuarter,
@@ -44,9 +47,9 @@ export function useFilters () {
     });
 
     setSearchParams(queryParams);
-    setIsGraphDataLoading(true)
-    localStorage.setItem('quarters', JSON.stringify(data.quarters));
-    localStorage.setItem('house-type', data.houseType);
+    setIsChartDataLoading(true);
+    localStorage.setItem("quarters", JSON.stringify(data.quarters));
+    localStorage.setItem("house-type", data.houseType);
   };
 
   return {
@@ -54,6 +57,6 @@ export function useFilters () {
     onSubmit,
     handleSubmit,
     searchParams,
-    isGraphDataLoading
+    isChartDataLoading,
   };
 }

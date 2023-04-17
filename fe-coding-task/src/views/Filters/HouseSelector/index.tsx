@@ -1,22 +1,23 @@
-import { NativeSelect } from '@mui/material';
-import React, { ChangeEvent } from 'react';
-import { HouseType } from '../../types/HouseType';
-import { useFormContext } from 'react-hook-form';
-import { FormValues } from '../../types/FormValues';
+import React, { ChangeEvent } from "react";
+import { NativeSelect } from "@mui/material";
+import { HouseTypes } from "../../types/HouseTypes";
+import { FormValues } from "../../types/FormValues";
+import { useFormContext } from "react-hook-form";
 
-export function HouseSelector () {
-  const { register, setValue } = useFormContext<FormValues>()
+export function HouseSelector() {
+  const { register, setValue } = useFormContext<FormValues>();
   const onChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    setValue('houseType', event.target.value)
-  }
+    setValue("houseType", event.target.value);
+  };
   return (
     <NativeSelect
-      {...register('houseType')}
+      sx={{ color: "success.main" }}
+      {...register("houseType")}
       onChange={onChange}
     >
-      <option value={HouseType.All}>{HouseType.All}</option>
-      <option value={HouseType.SmallHouses}>{HouseType.SmallHouses}</option>
-      <option value={HouseType.ApartmentBlocks}>{HouseType.ApartmentBlocks}</option>
+      <option value={HouseTypes.All}>{HouseTypes.All}</option>
+      <option value={HouseTypes.Apartment}>{HouseTypes.Apartment}</option>
+      <option value={HouseTypes.Houses}>{HouseTypes.Houses}</option>
     </NativeSelect>
-  )
+  );
 }

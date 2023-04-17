@@ -1,20 +1,16 @@
-import { useForm, FormProvider } from 'react-hook-form';
-import { FormValues } from '../types/FormValues';
-import { HouseType } from '../types/HouseType';
-import React, { ReactNode } from 'react';
+import { useForm, FormProvider } from "react-hook-form";
+import { FormValues } from "../types/FormValues";
+import { HouseTypes } from "../types/HouseTypes";
+import React, { ReactNode } from "react";
 
 interface Props {
   children: ReactNode;
 }
 
-export function FiltersFormProvider({ children }: Props) {
+export function ContentProvider({ children }: Props) {
   const methods = useForm<FormValues>({
-    defaultValues: {houseType: HouseType.All, quarters: [0, 7]}
+    defaultValues: { houseType: HouseTypes.All, quarters: [14, 32] },
   });
 
-  return (
-    <FormProvider {...methods}>
-      {children}
-    </FormProvider>
-  )
+  return <FormProvider {...methods}>{children}</FormProvider>;
 }

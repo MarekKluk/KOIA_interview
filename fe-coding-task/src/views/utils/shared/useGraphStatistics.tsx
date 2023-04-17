@@ -1,20 +1,28 @@
-import { useState } from 'react';
-import { StatisticsData } from '../../types/StatisticsData';
+import "./index.css";
+import { Chart } from "./Chart";
+import { Filters } from "./Selectors";
+import { SavedDataTable } from "./SavedDataTable";
+import { useChartData } from "./Chart/useChartData";
+import { ContentProvider } from "./ContentProvider";
 
-export function useGraphStatistics() {
-  const getStatisticsFromStorage = () => (JSON.parse(localStorage.getItem('statistics') || '[]'))
+import { useState } from "react";
+import { ParametersData } from "./types/ParametersData";
 
-  const [savedStatistics, setSavedStatistics] = useState<StatisticsData[] | []>(
-    getStatisticsFromStorage()
-  )
+const useChartParameters = () => {
+  const getParametersFromStorage = () =>
+    JSON.parse(localStorage.getItem("parameters") || "[]");
 
-  const refreshStatistics = () => {
-    const statistics = getStatisticsFromStorage();
-    setSavedStatistics(statistics);
-  }
+  const [savedParameters, setSavedParameters] = useState<ParametersData[] | []>(
+    getParametersFromStorage()
+  );
+
+  const updateParameters = () => {
+    const parameters = getParametersFromStorage();
+    setSavedParameters(parameters);
+  };
 
   return {
-    savedStatistics,
-    refreshStatistics
-  }
-}
+    savedParameters,
+    updateParameters,
+  };
+};
